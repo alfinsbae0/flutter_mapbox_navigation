@@ -22,7 +22,7 @@ class CustomInfoPanelEndNavButtonBinder(
             R.style.DropInStyleExitButton
         )
         button.iconImage.setImageResource(R.drawable.mapbox_ic_stop_navigation)
-        viewGroup.removeAllViews()
+//        viewGroup.removeAllViews()
         viewGroup.addView(button)
         button.updateMargins(
             right = button.resources.getDimensionPixelSize(R.dimen.mapbox_infoPanel_paddingEnd)

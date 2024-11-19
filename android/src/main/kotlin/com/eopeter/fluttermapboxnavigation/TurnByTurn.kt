@@ -77,6 +77,7 @@ open class TurnByTurn(
                 this.buildRoute(methodCall, result)
             }
             "clearRoute" -> {
+                Log.d("clear route", "ini adalah log")
                 this.clearRoute(methodCall, result)
             }
             "startFreeDrive" -> {
