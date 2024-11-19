@@ -78,6 +78,7 @@ open class TurnByTurn(
                 this.buildRoute(methodCall, result)
             }
             "clearRoute" -> {
+                MapboxNavigationApp.current()!!.stopTripSession()
                 Log.d("clear route", "ini adalah log")
                 this.clearRoute(methodCall, result)
             }
