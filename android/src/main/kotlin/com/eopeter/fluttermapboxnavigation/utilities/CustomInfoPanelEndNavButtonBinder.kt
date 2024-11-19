@@ -13,7 +13,7 @@ import com.mapbox.navigation.ui.base.lifecycle.UIComponent
 import com.mapbox.navigation.ui.base.view.MapboxExtendableButton
 
 class CustomInfoPanelEndNavButtonBinder(
-    val activity: Activity
+    private val activity: Activity
 ) : UIBinder {
     override fun bind(viewGroup: ViewGroup): MapboxNavigationObserver {
         val button = MapboxExtendableButton(
@@ -22,11 +22,14 @@ class CustomInfoPanelEndNavButtonBinder(
             R.style.DropInStyleExitButton
         )
         button.iconImage.setImageResource(R.drawable.mapbox_ic_stop_navigation)
-//        viewGroup.removeAllViews()
+        viewGroup.removeAllViews()
         viewGroup.addView(button)
         button.updateMargins(
             right = button.resources.getDimensionPixelSize(R.dimen.mapbox_infoPanel_paddingEnd)
         )
+
+        val isEmbedded: Boolean
+        get() = activity.intent.getBooleanExtra("isEmbedded", false)
 
         return object : UIComponent() {
             override fun onAttached(mapboxNavigation: MapboxNavigation) {
@@ -34,7 +37,19 @@ class CustomInfoPanelEndNavButtonBinder(
                 button.setOnClickListener {
                     mapboxNavigation.stopTripSession()
                     PluginUtilities.sendEvent(MapBoxEvents.NAVIGATION_CANCELLED)
-                    activity.finish()
+
+                    if (isEmbedded) {
+                        // Jika embedded, hanya menyembunyikan panel navigasi
+                        activity.supportFragmentManager.findFragmentById(R.id.navigation_fragment_container)
+                            ?.let { fragment ->
+                                activity.supportFragmentManager.beginTransaction()
+                                    .remove(fragment)
+                                    .commit()
+                            }
+                    } else {
+                        // Jika full-screen, tutup aktivitas
+                        activity.finish()
+                    }
                 }
             }
         }
