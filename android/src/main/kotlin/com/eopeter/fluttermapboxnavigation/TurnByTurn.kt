@@ -29,6 +29,7 @@ import com.mapbox.navigation.base.route.RouterFailure
 import com.mapbox.navigation.base.route.RouterOrigin
 import com.mapbox.navigation.base.trip.model.RouteLegProgress
 import com.mapbox.navigation.base.trip.model.RouteProgress
+import com.mapbox.navigation.core.MapboxNavigation
 import com.mapbox.navigation.core.arrival.ArrivalObserver
 import com.mapbox.navigation.core.directions.session.RoutesObserver
 import com.mapbox.navigation.core.lifecycle.MapboxNavigationApp
@@ -177,6 +178,11 @@ open class TurnByTurn(
             this.currentRoutes = null
 
             val navigation = MapboxNavigationApp.current()
+            if (navigation == null){
+                Log.e("clear route", "Is null")
+                result.error("Navigate is null")
+                return
+            }
             if (navigation != null) {
                 navigation.stopTripSession()
                 PluginUtilities.sendEvent(MapBoxEvents.NAVIGATION_CANCELLED)
