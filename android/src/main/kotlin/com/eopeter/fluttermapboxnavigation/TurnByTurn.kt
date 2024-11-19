@@ -177,6 +177,7 @@ open class TurnByTurn(
         val navigation = MapboxNavigationApp.current()
         navigation?.stopTripSession()
         PluginUtilities.sendEvent(MapBoxEvents.NAVIGATION_CANCELLED)
+        result.success(true)
     }
 
     private fun startFreeDrive() {
