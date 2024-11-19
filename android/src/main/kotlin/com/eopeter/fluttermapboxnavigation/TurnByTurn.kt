@@ -78,8 +78,6 @@ open class TurnByTurn(
                 this.buildRoute(methodCall, result)
             }
             "clearRoute" -> {
-                MapboxNavigationApp.current()!!.stopTripSession()
-                Log.d("clear route", "ini adalah log")
                 this.clearRoute(methodCall, result)
             }
             "startFreeDrive" -> {
@@ -177,20 +175,10 @@ open class TurnByTurn(
     private fun clearRoute(methodCall: MethodCall, result: MethodChannel.Result) {
         try {
             this.currentRoutes = null
-
             val navigation = MapboxNavigationApp.current()
-            if (navigation == null){
-                Log.e("clear route", "Is null")
-                result.error("Navigate is null")
-                return
-            }
-            if (navigation != null) {
-                navigation.stopTripSession()
-                PluginUtilities.sendEvent(MapBoxEvents.NAVIGATION_CANCELLED)
-            } else {
-                Log.w("MapboxNavigation", "No active MapboxNavigation instance found")
-            }
-
+            navigation?.stopTripSession()
+            WaypointSet().clear()
+            PluginUtilities.sendEvent(MapBoxEvents.NAVIGATION_CANCELLED)
             result.success(true)
         } catch (e: Exception) {
             Log.e("clearRoute", "Error clearing route: ${e.message}", e)
